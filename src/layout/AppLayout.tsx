@@ -1,10 +1,9 @@
 import { Box, styled, Typography } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
-
-import { NavLink, Outlet,  } from "react-router";
 import Library from "../common/components/Library";
 import LibraryHead from "../common/components/LibraryHead";
+import { NavLink, Outlet } from "react-router-dom";
 
 
 const Layout = styled("div")({
