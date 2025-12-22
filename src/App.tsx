@@ -1,7 +1,11 @@
+import React, { Suspense } from "react"
 import { BrowserRouter, Routes, Route } from "react-router";
-import AppLayout from "./layout/AppLayout";
-import HomePage from "./pages/HomePage/HomePage";
-import SearchPage from "./pages/SearchPage/SearchPage";
+// import AppLayout from "./layout/AppLayout";
+// import HomePage from "./pages/HomePage/HomePage";
+// import SearchPage from "./pages/SearchPage/SearchPage";
+const AppLayout = React.lazy(()=> import('./layout/AppLayout'))
+const HomePage = React.lazy(()=> import('./pages/HomePage/HomePage'))
+const SearchPage = React.lazy(()=> import('./pages/SearchPage/SearchPage'))
 
 // 0. 사이드바가 있어야함 (플레이리스트, 메뉴)
 // 1. 홈페이지 /
@@ -12,7 +16,7 @@ import SearchPage from "./pages/SearchPage/SearchPage";
 //
 function App() {
   return (
-    <BrowserRouter>
+    <Suspense fallback={<div>loading...</div>}>
       <Routes>
         <Route path="/" element={<AppLayout />}>
           { <Route index element={<HomePage />} /> }
@@ -24,7 +28,7 @@ function App() {
 
         {/* <Route path="/admin" element={AdminLayOyut}></Route> */}
       </Routes>
-    </BrowserRouter>
+    </Suspense>
   );
 }
 
