@@ -1,0 +1,90 @@
+import React from "react";
+import styled, { keyframes } from "styled-components";
+
+type LoadingSpinnerProps = {
+  /** 화면 중앙 오버레이로 띄울지 (Suspense fallback에 추천) */
+  fullscreen?: boolean;
+  /** 크기(px) */
+  size?: number;
+  /** 점 색상들 (이미지 느낌: 주황/노랑/오렌지) */
+  colors?: [string, string, string];
+  /** 밑에 문구 */
+  message?: string;
+};
+
+const spin = keyframes`
+  to { transform: rotate(360deg); }
+`;
+
+const Overlay = styled.div<{ $fullscreen: boolean }>`
+  ${({ $fullscreen }) =>
+    $fullscreen
+      ? `
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    z-index: 9999;
+  `
+      : `
+    display: grid;
+    place-items: center;
+  `}
+`;
+
+const Box = styled.div`
+  display: grid;
+  place-items: center;
+  gap: 14px;
+`;
+
+const Orbit = styled.div<{ $size: number }>`
+  width: ${({ $size }) => $size}px;
+  height: ${({ $size }) => $size}px;
+  position: relative;
+  animation: ${spin} 1.1s linear infinite;
+  will-change: transform;
+`;
+
+const Dot = styled.div<{ $c: string; $d: number; $size: number }>`
+  --dot: ${({ $size }) => Math.max(10, Math.round($size * 0.28))}px;
+
+  width: var(--dot);
+  height: var(--dot);
+  border-radius: 999px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: ${({ $c }) => $c};
+  transform: rotate(${({ $d }) => $d}deg) translate(${({ $size }) => Math.round($size * 0.34)}px)
+    translate(-50%, -50%);
+`;
+
+const Text = styled.div`
+  font-size: 14px;
+  opacity: 0.75;
+`;
+
+const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
+  fullscreen = false,
+  size = 90,
+  // ✅ 너가 준 버튼(PLAY NOW) 느낌 주황 계열 기반
+  colors = ["#F24C05", "#F7C51D", "#FF8A1F"],
+  message,
+}) => {
+  return (
+    <Overlay $fullscreen={fullscreen} role="status" aria-live="polite">
+      <Box>
+        <Orbit $size={size} aria-hidden="true">
+          <Dot $size={size} $c={colors[0]} $d={210} />
+          <Dot $size={size} $c={colors[1]} $d={330} />
+          <Dot $size={size} $c={colors[2]} $d={90} />
+        </Orbit>
+
+        {message ? <Text>{message}</Text> : null}
+      </Box>
+    </Overlay>
+  );
+};
+
+export default LoadingSpinner;
