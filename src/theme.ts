@@ -1,8 +1,9 @@
 import { createTheme } from "@mui/material";
 
 const BRAND = {
-  main: "#FF8A3D",
-  soft: "#FFB26B",
+  main: "#DB5B05",    
+  hover: "#E26412",    
+  soft: "#FFB26B",    
   subtle: "#FFD6A5",
 };
 
@@ -12,45 +13,40 @@ const theme = createTheme({
 
     primary: {
       main: BRAND.main,
-      light: BRAND.soft,
-      dark: "#E06B1F",
+      light: BRAND.hover,     
+      dark: "#B84A04",      
+      contrastText: "#FFFFFF" 
     },
 
     secondary: {
-      main: "#ffffff",
+      main: "#FFFFFF",
     },
 
     background: {
-      default: "#0B0B0B",   // 완전 블랙보다 살짝 부드럽게
-      paper: "#141414",
+      default: "#151515",   
+      paper: "#1F1F1F",    
     },
 
     text: {
       primary: "#FFFFFF",
-      secondary: "#CFCFCF",
+      secondary: "rgba(255,255,255,0.72)", 
     },
 
     action: {
-      hover: "rgba(255, 138, 61, 0.08)", // 오렌지 톤 hover
-      active: "rgba(255, 138, 61, 0.16)",
+      hover: "rgba(255,255,255,0.06)",  
+      selected: "rgba(219, 91, 5, 0.16)",
+      active: "rgba(255,255,255,0.12)",
     },
+
+    divider: "rgba(255,255,255,0.10)",  
   },
 
   typography: {
     fontFamily: "Roboto, Arial, sans-serif",
-    h1: {
-      fontWeight: 700,
-      fontSize: "24px",
-    },
-    h2: {
-      fontSize: "1rem",
-    },
-    body1: {
-      fontSize: "14px",
-    },
-    subtitle1: {
-      fontSize: "0.6875rem",
-    },
+    h1: { fontWeight: 700, fontSize: "24px" },
+    h2: { fontSize: "1rem" },
+    body1: { fontSize: "14px" },
+    subtitle1: { fontSize: "0.6875rem" },
   },
 
   components: {
@@ -62,16 +58,16 @@ const theme = createTheme({
         },
         containedPrimary: {
           backgroundColor: BRAND.main,
-          color: "#000",
+          color: "#FFFFFF",
           "&:hover": {
-            backgroundColor: BRAND.soft,
+            backgroundColor: BRAND.hover,
           },
         },
         containedSecondary: {
-          backgroundColor: "#ffffff",
-          color: "#000000",
+          backgroundColor: "#FFFFFF",
+          color: "#111111",
           "&:hover": {
-            backgroundColor: "#e0e0e0",
+            backgroundColor: "#E8E8E8",
           },
         },
         sizeLarge: {
