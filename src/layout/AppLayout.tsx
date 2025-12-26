@@ -9,7 +9,8 @@ import Navbar from "./components/Navbar";
 const Layout = styled("div")({
   display: "flex", // 양옆 배치
   height: "100vh",
-  padding: "8px", // 박스 사이 약간의 텀을 주기 위해 사용
+  padding: "8px", 
+  gap: "8px",
 });
 
 const Sidebar = styled("div")(({ theme }) => ({
@@ -29,6 +30,7 @@ const ContentBox = styled(Box)(({ theme }) => ({
   width: "100%", //width:"331px" 100% 활용
   marginBottom: "8px",
   marginRight: "8px",
+
 }));
 
 const NavList = styled("ul")({
@@ -100,7 +102,10 @@ const AppLayout = () => {
 
       <ContentBox>
         <Navbar />
+
         <Outlet />
+
+
       </ContentBox>
     </Layout>
   );
