@@ -1,10 +1,10 @@
 import { Box, styled, Typography } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
-import Library from "../common/components/Library";
-import LibraryHead from "../common/components/LibraryHead";
+import Library from "./components/Library";
+import LibraryHead from "./components/LibraryHead";
 import { NavLink, Outlet } from "react-router-dom";
-
+import Navbar from "./components/Navbar";
 
 const Layout = styled("div")({
   display: "flex", // 양옆 배치
@@ -17,8 +17,6 @@ const Sidebar = styled("div")(({ theme }) => ({
   height: "100%", // 100vh
   display: "flex", // 요소들을 쉽게 배치시키기 위해 사용
   flexDirection: "column",
-  // 모바일 버전에는 사이드바가 사라질 예정인데
-  // mui 제공하는 breakpoints를 사용한다
   [theme.breakpoints.down("sm")]: {
     display: "none",
   },
@@ -40,16 +38,31 @@ const NavList = styled("ul")({
 });
 
 const StyledNavLink = styled(NavLink)(({ theme }) => ({
+  position: "relative",
   textDecoration: "none",
   display: "flex",
   alignItems: "center",
   gap: "20px",
+
+  padding: "12px 16px",
+
   color: theme.palette.text.secondary,
   "&:hover": {
     color: theme.palette.text.primary,
   },
   "&.active": {
     color: theme.palette.text.primary,
+  },
+    "&.active::before": {
+    content: '""',
+    position: "absolute",
+    left: 0,
+    top: "50%",
+    transform: "translateY(-50%)",
+    width: "3px",
+    height: "60%",
+    backgroundColor: theme.palette.primary.main,
+    borderRadius: "2px",
   },
 }));
 
@@ -59,18 +72,23 @@ const AppLayout = () => {
       <Sidebar>
         <ContentBox>
           <NavList>
-            <StyledNavLink to="/">
-              <HomeIcon />
-              <Typography variant="h2" fontWeight={700}>
-                Home
-              </Typography>
-            </StyledNavLink>
-            <StyledNavLink to="/search">
-              <SearchIcon />
-              <Typography variant="h2" fontWeight={700}>
-                Search
-              </Typography>
-            </StyledNavLink>
+            <li>
+              <StyledNavLink to="/">
+                <HomeIcon />
+                <Typography variant="h2" fontWeight={700}>
+                  Home
+                </Typography>
+              </StyledNavLink>
+            </li>
+
+            <li>
+              <StyledNavLink to="/search">
+                <SearchIcon />
+                <Typography variant="h2" fontWeight={700}>
+                  Search
+                </Typography>
+              </StyledNavLink>
+            </li>
           </NavList>
         </ContentBox>
 
@@ -81,7 +99,7 @@ const AppLayout = () => {
       </Sidebar>
 
       <ContentBox>
-
+        <Navbar />
         <Outlet />
       </ContentBox>
     </Layout>

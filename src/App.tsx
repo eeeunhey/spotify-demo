@@ -1,5 +1,6 @@
 import React, { Suspense } from "react"
 import { BrowserRouter, Routes, Route } from "react-router";
+import LoadingSpinner from "./layout/components/LodingSpinner";
 // import AppLayout from "./layout/AppLayout";
 // import HomePage from "./pages/HomePage/HomePage";
 // import SearchPage from "./pages/SearchPage/SearchPage";
