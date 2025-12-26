@@ -1,41 +1,28 @@
+  
 import { createTheme } from "@mui/material";
-
-const BRAND = {
-  main: "#FF8A3D",
-  soft: "#FFB26B",
-  subtle: "#FFD6A5",
-};
 
 const theme = createTheme({
   palette: {
     mode: "dark",
-
     primary: {
-      main: BRAND.main,
-      light: BRAND.soft,
-      dark: "#E06B1F",
+      main: "#1ed760",
     },
-
     secondary: {
       main: "#ffffff",
     },
-
     background: {
-      default: "#0B0B0B",   // 완전 블랙보다 살짝 부드럽게
-      paper: "#141414",
+      default: "#000",
+      paper: "#121212",
     },
-
     text: {
-      primary: "#FFFFFF",
-      secondary: "#CFCFCF",
+      primary: "#fff",
+      secondary: "#b3b3b3",
     },
-
     action: {
-      hover: "rgba(255, 138, 61, 0.08)", // 오렌지 톤 hover
-      active: "rgba(255, 138, 61, 0.16)",
+      hover: "#282828",
+      active: "#333",
     },
   },
-
   typography: {
     fontFamily: "Roboto, Arial, sans-serif",
     h1: {
@@ -52,20 +39,12 @@ const theme = createTheme({
       fontSize: "0.6875rem",
     },
   },
-
   components: {
     MuiButton: {
       styleOverrides: {
         root: {
           borderRadius: "30px",
           textTransform: "none",
-        },
-        containedPrimary: {
-          backgroundColor: BRAND.main,
-          color: "#000",
-          "&:hover": {
-            backgroundColor: BRAND.soft,
-          },
         },
         containedSecondary: {
           backgroundColor: "#ffffff",
@@ -85,3 +64,4 @@ const theme = createTheme({
 });
 
 export default theme;
+  
