@@ -1,3 +1,4 @@
+  
 import { createTheme } from "@mui/material";
 
 const BRAND = {
@@ -10,28 +11,23 @@ const BRAND = {
 const theme = createTheme({
   palette: {
     mode: "dark",
-
     primary: {
       main: BRAND.main,
       light: BRAND.hover,     
       dark: "#B84A04",      
       contrastText: "#FFFFFF" 
     },
-
     secondary: {
       main: "#FFFFFF",
     },
-
     background: {
       default: "#151515",   
       paper: "#1F1F1F",    
     },
-
     text: {
       primary: "#FFFFFF",
       secondary: "rgba(255,255,255,0.72)", 
     },
-
     action: {
       hover: "rgba(255,255,255,0.06)",  
       selected: "rgba(219, 91, 5, 0.16)",
@@ -40,7 +36,6 @@ const theme = createTheme({
 
     divider: "rgba(255,255,255,0.10)",  
   },
-
   typography: {
     fontFamily: "Roboto, Arial, sans-serif",
     h1: { fontWeight: 700, fontSize: "24px" },
@@ -48,7 +43,6 @@ const theme = createTheme({
     body1: { fontSize: "14px" },
     subtitle1: { fontSize: "0.6875rem" },
   },
-
   components: {
     MuiButton: {
       styleOverrides: {
@@ -81,3 +75,4 @@ const theme = createTheme({
 });
 
 export default theme;
+  
