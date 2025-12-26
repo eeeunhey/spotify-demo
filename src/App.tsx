@@ -1,5 +1,5 @@
 import React, { Suspense } from "react"
-import { Routes, Route } from "react-router";
+import { Routes, Route } from "react-router-dom";
 import LoadingSpinner from "./layout/components/LodingSpinner";
 
 // import AppLayout from "./layout/AppLayout";
