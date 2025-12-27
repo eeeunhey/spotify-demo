@@ -1,4 +1,5 @@
 import { Button, styled } from '@mui/material'
+import { getSpotifyAuthUrl } from '../../utils/auth';
 
 
 
@@ -14,8 +15,12 @@ const CustomButton = styled(Button)(({ theme }) => ({
 }))
 
 const LoginButton = () => {
+  const login = () => {
+    getSpotifyAuthUrl();
+  }
+
   return (
-    <CustomButton color="secondary" size="large" >
+    <CustomButton color="secondary" size="large" onClick={login}>
       Login
     </CustomButton>
   );
