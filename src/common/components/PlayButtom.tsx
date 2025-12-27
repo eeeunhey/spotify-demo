@@ -1,5 +1,6 @@
-// PlayButton.tsx
 import { styled } from "@mui/material/styles";
+import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
+import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
 
 type PlayButtonProps = {
   isPlaying?: boolean;
@@ -7,53 +8,63 @@ type PlayButtonProps = {
   size?: number;
 };
 
-const Btn = styled("button")<{ $size: number }>(({ theme, $size }) => ({
+const Btn = styled("button")<{ $size: number }>(({ $size }) => ({
   width: $size,
   height: $size,
-  border: "none",
   borderRadius: "50%",
+  border: "none",
   cursor: "pointer",
-
-  background: `linear-gradient(135deg,
-    ${theme.palette.primary.main},
-    ${theme.palette.primary.light}
-  )`,
-
+  padding: 0,
   display: "grid",
   placeItems: "center",
-  boxShadow: "0 6px 18px rgba(0,0,0,.25)",
-  transition: "transform .15s ease, box-shadow .15s ease",
+
+
+  background: "rgba(255, 255, 255, 0.22)",
+  backdropFilter: "blur(10px)",
+  WebkitBackdropFilter: "blur(10px)",
+
+
+  boxShadow: "0 8px 18px rgba(0,0,0,0.22)",
+  transform: "translateZ(0)",
+
+
+  transition:
+    "transform .22s cubic-bezier(0.2, 0.9, 0.2, 1), " +
+    "box-shadow .22s ease, " +
+    "background-color .22s ease",
 
   "&:hover": {
-    transform: "scale(1.06)",
-    boxShadow: "0 8px 24px rgba(0,0,0,.35)",
+    // scale만 살짝 + 그림자 조금만
+    transform: "translateZ(0) scale(1.04)",
+    boxShadow: "0 10px 22px rgba(0,0,0,0.26)",
+    background: "rgba(255, 255, 255, 0.28)",
   },
-  "&:active": {
-    transform: "scale(0.96)",
-  },
-}));
 
-const Icon = styled("svg")({
-  width: 24,
-  height: 24,
-  fill: "#111",
-});
+  "&:active": {
+    transform: "translateZ(0) scale(0.98)",
+  },
+
+  "&:focus-visible": {
+    outline: "none",
+    boxShadow: "0 0 0 3px rgba(255,255,255,0.35), 0 10px 22px rgba(0,0,0,0.26)",
+  },
+
+  willChange: "transform, box-shadow",
+}));
 
 export default function PlayButton({
   isPlaying = false,
   onClick,
-  size = 48,
+  size = 46,
 }: PlayButtonProps) {
+  const iconSize = Math.round(size * 0.64);
+
   return (
-    <Btn type="button" onClick={onClick} $size={size}>
+    <Btn type="button" onClick={onClick} $size={size} aria-label={isPlaying ? "Pause" : "Play"}>
       {isPlaying ? (
-        <Icon viewBox="0 0 24 24">
-          <path d="M6 5h4v14H6zM14 5h4v14h-4z" />
-        </Icon>
+        <PauseRoundedIcon sx={{ fontSize: iconSize, color: "#fff", filter: "drop-shadow(0 2px 8px rgba(0,0,0,.45))" }} />
       ) : (
-        <Icon viewBox="0 0 24 24">
-          <path d="M8 5v14l11-7z" />
-        </Icon>
+        <PlayArrowRoundedIcon sx={{ fontSize: iconSize, color: "#fff", ml: "2px", filter: "drop-shadow(0 2px 8px rgba(0,0,0,.45))" }} />
       )}
     </Btn>
   );
