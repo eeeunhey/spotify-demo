@@ -3,7 +3,7 @@ import { exchangeToken } from "../apis/authApi";
 import type { ExchangeTokenResponse } from "../models/auth";
 
 const useExchangeToken = () => {
-  // 응답값, 에러값, 매개변수
+
   return useMutation<
     ExchangeTokenResponse,
     Error,
