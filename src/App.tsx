@@ -1,13 +1,11 @@
-import React, { Suspense } from "react"
+import React, { Suspense, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import LoadingSpinner from "./layout/components/LodingSpinner";
+import useExchangeToken from "./hooks/useExchangeToken";
 
-// import AppLayout from "./layout/AppLayout";
-// import HomePage from "./pages/HomePage/HomePage";
-// import SearchPage from "./pages/SearchPage/SearchPage";
-const AppLayout = React.lazy(()=> import('./layout/AppLayout'))
-const HomePage = React.lazy(()=> import('./pages/HomePage/HomePage'))
-const SearchPage = React.lazy(()=> import('./pages/SearchPage/SearchPage'))
+const AppLayout = React.lazy(() => import("./layout/AppLayout"));
+const HomePage = React.lazy(() => import("./pages/HomePage/HomePage"));
+const SearchPage = React.lazy(() => import("./pages/SearchPage/SearchPage"));
 
 // 0. 사이드바가 있어야함 (플레이리스트, 메뉴)
 // 1. 홈페이지 /
@@ -17,15 +15,31 @@ const SearchPage = React.lazy(()=> import('./pages/SearchPage/SearchPage'))
 // 5. 모바일 버전에서 플레이리스트 보여주는 페이지 /palylist
 //
 function App() {
+  const urlParams = new URLSearchParams(window.location.search);
+  let code = urlParams.get("code");
+  const codeVerifier = localStorage.getItem("code_verifier");
+
+  const { mutate: exchangeToken } = useExchangeToken();
+
+  useEffect(() => {
+    if(code && codeVerifier){
+      exchangeToken({code, codeVerifier});
+    }
+
+
+  }, [code, codeVerifier,exchangeToken]);
   return (
-    <Suspense fallback={<div><LoadingSpinner /></div>}>
+    <Suspense
+      fallback={
+        <div>
+          <LoadingSpinner />
+        </div>
+      }
+    >
       <Routes>
         <Route path="/" element={<AppLayout />}>
-          { <Route index element={<HomePage />} /> }
+          {<Route index element={<HomePage />} />}
           <Route path="search" element={<SearchPage />} />
-          {/* <Route path="search/:keyword" element={<SearchWithKeywordPage />} /> */}
-          {/* <Route path="playlist/:id" element={<PalylistDetailPage />} />  */}
-          {/* <Route path="/playlist" element={<PalylistPage />} /> */}
         </Route>
 
         {/* <Route path="/admin" element={AdminLayOyut}></Route> */}

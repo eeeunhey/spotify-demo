@@ -1,3 +1,4 @@
+
 export interface ClientCredentialTokenResponse {
   access_token: string;
   token_type: string;
@@ -11,4 +12,12 @@ export interface AuthUrlParams {
   code_challenge_method: "S256";
   code_challenge: string;
   redirect_uri: string;
+}
+
+export interface exchangeTokenResponse {
+  access_token: string;
+  token_type:string;
+  expires_in:number;
+  refresh_token: string;
+  scope:string;
 }

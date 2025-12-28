@@ -1,13 +1,10 @@
 import axios from "axios";
 
-import type { ClientCredentialTokenResponse } from "../models/auth";
-import { clientId, secretId } from "../configs/authConfig";
+import type { ClientCredentialTokenResponse, exchangeTokenResponse } from "../models/auth";
+import { clientId, redirectUri, secretId } from "../configs/authConfig";
 
-
-// Base64 인코딩
 const encodedCredentials = btoa(`${clientId}:${secretId}`);
 
-// 클라이언트 자격 증명 토큰을 가져오는 함수
 export const getClientCredentialToken =
   async (): Promise<ClientCredentialTokenResponse> => {
     try {
@@ -32,3 +29,29 @@ export const getClientCredentialToken =
       throw new Error("Failed to fetch client credential token");
     }
   };
+
+export const exchangeToken = async (code: string, codeVerifier: string):Promise<exchangeTokenResponse> => {
+  try {
+    // gettoken을 여기서 구현
+    const url = "https://accounts.spotify.com/api/token";
+    if(!clientId || !redirectUri){
+      throw new Error("Missing required paramertters")
+    }
+    const body = new URLSearchParams({
+      client_id: clientId,
+      grant_type: "authorization_code",
+      code,
+      redirect_uri: redirectUri,
+      code_verifier: codeVerifier,
+    });
+
+    const response = await axios.post(url, body,{
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error("fail to fetch token");
+  }
+};
