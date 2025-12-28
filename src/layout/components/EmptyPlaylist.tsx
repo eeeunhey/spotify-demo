@@ -27,5 +27,5 @@ const EmptyPlaylist = () => {
   );
 };
 
-export default EmptyPlaylist;
+export {EmptyPlaylist};
 

@@ -21,3 +21,4 @@ export interface ExchangeTokenResponse {
   refresh_token: string;
   scope:string;
 }
+

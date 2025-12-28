@@ -1,15 +1,15 @@
 import { Box, styled, Typography } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
-import Library from "./components/Library";
-import LibraryHead from "./components/LibraryHead";
+import Library from "./components/library/Library";
+import LibraryHead from "./components/library/LibraryHead";
 import { NavLink, Outlet } from "react-router-dom";
-import Navbar from "./components/Navbar";
+import { Navbar } from "./components";
 
 const Layout = styled("div")({
   display: "flex", // 양옆 배치
   height: "100vh",
-  padding: "8px", 
+  padding: "8px",
   gap: "8px",
 });
 
@@ -30,7 +30,6 @@ const ContentBox = styled(Box)(({ theme }) => ({
   width: "100%", //width:"331px" 100% 활용
   marginBottom: "8px",
   marginRight: "8px",
-
 }));
 
 const NavList = styled("ul")({
@@ -55,7 +54,7 @@ const StyledNavLink = styled(NavLink)(({ theme }) => ({
   "&.active": {
     color: theme.palette.text.primary,
   },
-    "&.active::before": {
+  "&.active::before": {
     content: '""',
     position: "absolute",
     left: 0,
@@ -101,11 +100,12 @@ const AppLayout = () => {
       </Sidebar>
 
       <ContentBox>
-        <Navbar />
+        <div style={{ padding: "10px" }}>
+          {" "}
+          <Navbar />
+        </div>
 
         <Outlet />
-
-
       </ContentBox>
     </Layout>
   );
