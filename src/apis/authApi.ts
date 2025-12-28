@@ -1,9 +1,10 @@
 import axios from "axios";
 
-import type { ClientCredentialTokenResponse, exchangeTokenResponse } from "../models/auth";
-import { clientId, redirectUri, secretId } from "../configs/authConfig";
+import type { ClientCredentialTokenResponse, ExchangeTokenResponse } from "../models/auth";
+import { CLIENT_ID, SECRET_ID } from "../configs/authConfig";
+import { REDIRECT_URI } from "../configs/commonConfig";
 
-const encodedCredentials = btoa(`${clientId}:${secretId}`);
+const encodedCredentials = btoa(`${CLIENT_ID}:${SECRET_ID}`);
 
 export const getClientCredentialToken =
   async (): Promise<ClientCredentialTokenResponse> => {
@@ -30,28 +31,33 @@ export const getClientCredentialToken =
     }
   };
 
-export const exchangeToken = async (code: string, codeVerifier: string):Promise<exchangeTokenResponse> => {
+export const exchangeToken = async (
+  code: string,
+  codeVerifier: string
+): Promise<ExchangeTokenResponse> => {
   try {
-    // gettoken을 여기서 구현
     const url = "https://accounts.spotify.com/api/token";
-    if(!clientId || !redirectUri){
-      throw new Error("Missing required paramertters")
+
+    if (!CLIENT_ID || !REDIRECT_URI) {
+      throw new Error("Missing require parameters");
     }
     const body = new URLSearchParams({
-      client_id: clientId,
+      client_id: CLIENT_ID,
       grant_type: "authorization_code",
       code,
-      redirect_uri: redirectUri,
+      redirect_uri: REDIRECT_URI,
       code_verifier: codeVerifier,
     });
 
-    const response = await axios.post(url, body,{
+    const response = await axios.post(url, body, {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        "Content-Type": "application/x-www-form-urlencoded",
       },
     });
+
     return response.data;
   } catch (error) {
-    throw new Error("fail to fetch token");
+    console.error("Fetch Auth Exchange Token Error:", error);
+    throw new Error("Fail to fetch Auth Exchange Token");
   }
 };

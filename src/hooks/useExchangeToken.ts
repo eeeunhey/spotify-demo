@@ -1,9 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
 import { exchangeToken } from "../apis/authApi";
-import type { exchangeTokenResponse } from "../models/auth";
+import type { ExchangeTokenResponse } from "../models/auth";
 
 const useExchangeToken = () => {
-  return useMutation<exchangeTokenResponse, Error, {code:string,codeVerifier:string}>({
+  // 응답값, 에러값, 매개변수
+  return useMutation<
+    ExchangeTokenResponse,
+    Error,
+    { code: string; codeVerifier: string }
+  >({
     mutationFn: ({ code, codeVerifier }) => exchangeToken(code, codeVerifier),
     onSuccess: (data) => {
       localStorage.setItem("access_token", data.access_token);
@@ -12,4 +17,3 @@ const useExchangeToken = () => {
 };
 
 export default useExchangeToken;
- 

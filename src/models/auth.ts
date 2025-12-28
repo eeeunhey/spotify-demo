@@ -14,7 +14,7 @@ export interface AuthUrlParams {
   redirect_uri: string;
 }
 
-export interface exchangeTokenResponse {
+export interface ExchangeTokenResponse {
   access_token: string;
   token_type:string;
   expires_in:number;

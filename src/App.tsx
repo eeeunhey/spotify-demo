@@ -15,19 +15,18 @@ const SearchPage = React.lazy(() => import("./pages/SearchPage/SearchPage"));
 // 5. 모바일 버전에서 플레이리스트 보여주는 페이지 /palylist
 //
 function App() {
-  const urlParams = new URLSearchParams(window.location.search);
-  let code = urlParams.get("code");
+const urlParams = new URLSearchParams(window.location.search);
+const code = urlParams.get("code");
   const codeVerifier = localStorage.getItem("code_verifier");
 
   const { mutate: exchangeToken } = useExchangeToken();
 
   useEffect(() => {
-    if(code && codeVerifier){
-      exchangeToken({code, codeVerifier});
+    if (code && codeVerifier) {
+      exchangeToken({ code, codeVerifier });
     }
+  }, [code, codeVerifier]);
 
-
-  }, [code, codeVerifier,exchangeToken]);
   return (
     <Suspense
       fallback={
