@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import  { useEffect } from "react";
 import { styled } from "@mui/material";
 import { useInView } from "react-intersection-observer";
 import useGetCurrentUserPlaylists from "../../../hooks/useGetCurrentUserPlaylists";
