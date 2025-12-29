@@ -1,5 +1,3 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 import type { SimplifiedPlaylist } from "../models/playlist";
 import PlaylistItem from "./PlaylistItem";
@@ -9,12 +7,8 @@ interface PlaylistProps {
 }
 
 const Playlist = ({ playlists }: PlaylistProps) => {
-  const [selectedId, setSelectedId] = useState<string>("");
-  const navigate = useNavigate();
+  const handleEmptyClick = () => {
 
-  const handleItemClick = (id: string) => {
-    setSelectedId(id);
-    navigate(`/playlist/${id}`);
   };
 
   return (
@@ -23,11 +17,12 @@ const Playlist = ({ playlists }: PlaylistProps) => {
         <PlaylistItem
           key={item.id}
           id={item.id || ""}
-          selected={selectedId === item.id}
-          handleClick={handleItemClick}
+          selected={false}
+          handleClick={handleEmptyClick}
           name={item.name || "Untitled Playlist"}
           image={item.images?.[0]?.url || null}
           artistName={`Playlist • ${item.owner?.display_name || "Unknown"}`}
+          totalTracks={item.tracks?.total || 0} 
         />
       ))}
     </Box>

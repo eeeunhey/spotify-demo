@@ -1,12 +1,11 @@
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { getCurrentUserPlaylists } from "../apis/playlistApi";
 import type { GetCurrentUserPlaylistRequest } from "../models/playlist";
 
 //useInfiniteQuery 가 무한 스크롤을 가능하게 한다
 
 const useGetCurrentUserPlaylists = ({
-  limit,
-  offset,
+  limit
 }: GetCurrentUserPlaylistRequest) => {
   return useInfiniteQuery({
     queryKey: ["current-user-playlists"],

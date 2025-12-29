@@ -2,37 +2,33 @@ import {
   Avatar,
   ListItemAvatar,
   ListItemButton,
-  ListItemText,
   styled,
   Typography,
+  Box,
 } from "@mui/material";
 
 const PlayListItemContainer = styled(ListItemButton)(({ theme, selected }) => ({
-  padding: "12px 16px",
-  borderRadius: "12px",
+  padding: "10px 16px",
+  borderRadius: "8px",
   marginBottom: "4px",
-  transition: "all 0.2s ease",
-  backgroundColor: selected ? "rgba(238, 140, 42, 0.12)" : "transparent",
-  
+  transition: theme.transitions.create(["all"], {
+    duration: theme.transitions.duration.shorter,
+  }),
+  backgroundColor: selected ? theme.palette.action.selected : "transparent",
+  borderLeft: `4px solid ${selected ? "#DB5B05" : "transparent"}`,
   "&:hover": {
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
-    transform: "scale(1.02)",
+    background: `linear-gradient(90deg, rgba(219, 91, 5, 0.15) 0%, rgba(219, 91, 5, 0) 100%)`,
+    transform: "translateX(4px)",
+    borderLeft: `4px solid rgba(219, 91, 5, 0.5)`,
   },
 }));
 
-const PlaylistAvatar = styled(Avatar)({
-  width: "56px", 
-  height: "56px",
-  borderRadius: "8px",
-  boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-});
-
-const PlaylistName = styled(Typography)({
-  fontWeight: 600,
-  fontSize: "1rem",
-  color: "#DB5B05",
-  marginBottom: "2px",
-});
+const PlaylistAvatar = styled(Avatar)(({ theme }) => ({
+  width: "48px",
+  height: "48px",
+  borderRadius: "4px",
+  boxShadow: theme.shadows[2],
+}));
 
 interface PlaylistItemProps {
   image: string | null;
@@ -41,6 +37,7 @@ interface PlaylistItemProps {
   id: string;
   handleClick: (id: string) => void;
   selected?: boolean;
+  totalTracks?: number;
 }
 
 const PlaylistItem = ({
@@ -50,28 +47,70 @@ const PlaylistItem = ({
   id,
   handleClick,
   selected,
+  totalTracks,
 }: PlaylistItemProps) => {
   return (
     <PlayListItemContainer
       onClick={() => handleClick(id)}
       selected={selected || false}
     >
-      <ListItemAvatar sx={{ marginRight: "8px" }}>
+      <ListItemAvatar sx={{ minWidth: "56px" }}>
         {image ? (
-          <PlaylistAvatar src={image} alt={name} />
+          <PlaylistAvatar src={image} alt={name} variant="rounded" />
         ) : (
-          <PlaylistAvatar variant="rounded" sx={{ bgcolor: "#333" }}>🎵</PlaylistAvatar>
+          <PlaylistAvatar variant="rounded" sx={{ bgcolor: "divider" }}>
+            🎵
+          </PlaylistAvatar>
         )}
       </ListItemAvatar>
-      
-      <ListItemText
-        primary={<PlaylistName>{name}</PlaylistName>}
-        secondary={
-          <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.6)" }}>
-            {artistName || "Unknown Artist"}
+
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%",
+          overflow: "hidden",
+        }}
+      >
+        <Box sx={{ overflow: "hidden", marginRight: "16px" }}>
+          <Typography
+            variant="subtitle2"
+            sx={{
+              fontWeight: 600,
+              color: "text.primary",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {name}
           </Typography>
-        }
-      />
+          <Typography
+            variant="caption"
+            sx={{
+              color: "text.secondary",
+              display: "block",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {artistName}
+          </Typography>
+        </Box>
+
+        <Typography
+          variant="caption"
+          sx={{
+            color: "text.disabled",
+            fontWeight: 400,
+            whiteSpace: "nowrap",
+          }}
+        >
+          {totalTracks ?? 0} songs
+        </Typography>
+      </Box>
     </PlayListItemContainer>
   );
 };
