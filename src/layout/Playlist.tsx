@@ -7,10 +7,6 @@ interface PlaylistProps {
 }
 
 const Playlist = ({ playlists }: PlaylistProps) => {
-  const handleEmptyClick = () => {
-
-  };
-
   return (
     <Box sx={{ padding: "8px", display: "flex", flexDirection: "column", gap: "4px" }}>
       {playlists.map((item) => (
@@ -18,11 +14,11 @@ const Playlist = ({ playlists }: PlaylistProps) => {
           key={item.id}
           id={item.id || ""}
           selected={false}
-          handleClick={handleEmptyClick}
+          handleClick={() => {}} 
           name={item.name || "Untitled Playlist"}
           image={item.images?.[0]?.url || null}
           artistName={`Playlist • ${item.owner?.display_name || "Unknown"}`}
-          totalTracks={item.tracks?.total || 0} 
+          totalTracks={item.tracks?.total || 0}
         />
       ))}
     </Box>
