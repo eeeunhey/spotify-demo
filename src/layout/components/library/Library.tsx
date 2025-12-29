@@ -1,13 +1,10 @@
-import  { useEffect } from "react";
+import { useEffect } from "react";
 import { styled } from "@mui/material";
 import { useInView } from "react-intersection-observer";
 import useGetCurrentUserPlaylists from "../../../hooks/useGetCurrentUserPlaylists";
 import LoadingSpinner from "../LodingSpinner";
-import ErrorMessage from "../../../common/components/ErrorMessage";
 import { EmptyPlaylist } from "../EmptyPlaylist";
 import Playlist from "../../Playlist";
-
-
 
 const PlaylistContainer = styled("div")(({ theme }) => ({
   overflowY: "auto",
@@ -38,11 +35,10 @@ const Library = () => {
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   if (isLoading) return <LoadingSpinner />;
-  if (error) return <ErrorMessage errorMessage={error.message} />;
 
   const isEmpty = !data || data.pages[0].items.length === 0;
 
-  if (isEmpty) return <EmptyPlaylist />;
+  if (error || isEmpty) return <EmptyPlaylist />;
 
   return (
     <PlaylistContainer>
