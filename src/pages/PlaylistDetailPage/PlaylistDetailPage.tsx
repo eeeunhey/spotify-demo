@@ -8,7 +8,7 @@ import PlaylistHeader from "./PlaylistHeader";
 const PlaylistDetailPage = () => {
   const { id } = useParams<{ id: string }>();
 
-  if (!id) return <Navigate to="/" replace />;
+  if (!id) return <Navigate to="/" />;
 
   const { data: playlist, isLoading, isError } = useGetPlaylist({
     playlist_id: id,
