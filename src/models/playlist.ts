@@ -27,3 +27,49 @@ export interface SimplifiedPlaylist {
   type?:string;
 }
 
+export interface GetPlaylistRequest {
+  playlist_id: string;
+  market?:string;
+  fields?:string;
+  additional_types?: string;
+}
+
+export type GetPlaylistResponse = Playlist;
+
+export interface Playlist extends SimplifiedPlaylist {
+  followers?: {
+    total?: number;
+  };
+  tracks?: {
+    href?: string;
+    total?: number;
+    items?: PlaylistTrackItem[];
+  };
+}
+
+export interface PlaylistTrackItem {
+  added_at?: string;
+  track?: Track;
+}
+
+export interface Track {
+  id?: string;
+  name?: string;
+  duration_ms?: number;
+  preview_url?: string | null;
+  external_urls?: ExternalUrls;
+  artists?: Artist[];
+  album?: Album;
+}
+export interface Artist {
+  id?: string;
+  name?: string;
+  external_urls?: ExternalUrls;
+}
+
+export interface Album {
+  id?: string;
+  name?: string;
+  images?: Image[];
+  external_urls?: ExternalUrls;
+}

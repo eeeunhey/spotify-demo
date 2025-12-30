@@ -2,10 +2,13 @@ import React, { Suspense, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import LoadingSpinner from "./layout/components/LodingSpinner";
 import useExchangeToken from "./hooks/useExchangeToken";
+import PlaylistDetailPage from "./pages/PlaylistDetailPage/PlaylistDetailPage";
+import PlaylistPage from "./pages/PlaylistPage/PlaylistPage";
 
 const AppLayout = React.lazy(() => import("./layout/AppLayout"));
 const HomePage = React.lazy(() => import("./pages/HomePage/HomePage"));
 const SearchPage = React.lazy(() => import("./pages/SearchPage/SearchPage"));
+
 
 // 0. 사이드바가 있어야함 (플레이리스트, 메뉴)
 // 1. 홈페이지 /
@@ -40,6 +43,9 @@ const code = urlParams.get("code");
         <Route path="/" element={<AppLayout />}>
           {<Route index element={<HomePage />} />}
           <Route path="search" element={<SearchPage />} />
+           <Route path="search/:keyword" element={<SearchPage />} />
+            <Route path="playlist/:id" element={<PlaylistDetailPage />} />
+             <Route path="playlist" element={<PlaylistPage />} />
         </Route>
 
         {/* <Route path="/admin" element={AdminLayOyut}></Route> */}

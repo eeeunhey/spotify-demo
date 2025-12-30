@@ -7,6 +7,8 @@ import {
   Box,
 } from "@mui/material";
 
+import GraphicEqRoundedIcon from "@mui/icons-material/GraphicEqRounded";
+
 const PlayListItemContainer = styled(ListItemButton)(({ theme, selected }) => ({
   padding: "10px 16px",
   borderRadius: "8px",
@@ -49,6 +51,9 @@ const PlaylistItem = ({
   selected,
   totalTracks,
 }: PlaylistItemProps) => {
+
+  
+
   return (
     <PlayListItemContainer
       onClick={() => handleClick(id)}
@@ -59,7 +64,7 @@ const PlaylistItem = ({
           <PlaylistAvatar src={image} alt={name} variant="rounded" />
         ) : (
           <PlaylistAvatar variant="rounded" sx={{ bgcolor: "divider" }}>
-            🎵
+             <GraphicEqRoundedIcon sx={{ color: "#ff8b16ff", fontSize: 22 }} />
           </PlaylistAvatar>
         )}
       </ListItemAvatar>
