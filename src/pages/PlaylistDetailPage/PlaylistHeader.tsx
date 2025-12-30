@@ -73,7 +73,7 @@ const PlaylistHeader = ({ playlist }: Props) => {
   const title = playlist.name?.trim() || "제목 없는 플레이리스트";
   const imageUrl = playlist.images?.[0]?.url || "";
   const ownerName = playlist.owner?.display_name?.trim() || "알 수 없음";
-  const totalTracks = playlist.tracks?.total;
+  const totalTracks = playlist.tracks?.total ?? 0;
 
   // 2) 총 재생시간 계산 → 문자열로 변환
   const totalMs = sumPlaylistDurationMs(playlist);
