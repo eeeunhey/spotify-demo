@@ -5,7 +5,7 @@ import useExchangeToken from "./hooks/useExchangeToken";
 import PlaylistDetailPage from "./pages/PlaylistDetailPage/PlaylistDetailPage";
 import PlaylistPage from "./pages/PlaylistPage/PlaylistPage";
 
-const AppLayout = React.lazy(() => import("./layout/AppLayout"));
+const AppLayout = React.lazy(() => import("./layout/AppLayout/AppLayout"));
 const HomePage = React.lazy(() => import("./pages/HomePage/HomePage"));
 const SearchPage = React.lazy(() => import("./pages/SearchPage/SearchPage"));
 

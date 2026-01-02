@@ -1,4 +1,4 @@
-// src/components/navbar/Navbar.tsx
+
 import { Box } from "@mui/material";
 import ProfileMenuView from "./ProfileMenu";
 import { useAuth } from "../../../apis/useAuth";

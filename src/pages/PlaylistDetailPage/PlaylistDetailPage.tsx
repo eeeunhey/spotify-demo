@@ -2,7 +2,7 @@
 import { Navigate, useParams } from "react-router-dom";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import useGetPlaylist from "../../hooks/useGetPlaylist";
-import PlaylistHeader from "./PlaylistHeader";
+import PlaylistHeader from "./PlaylistHeader/PlaylistHeader";
 
 
 const PlaylistDetailPage = () => {
