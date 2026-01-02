@@ -1,5 +1,6 @@
 import type { ApiResponse } from "./apiResponse";
 import type { ExternalUrls, Image, Owner, Followers } from "./commonType";
+import type { Track, Episode } from "./track";
 
 export interface GetCurrentUserPlaylistRequest {
   limit?: number;
@@ -10,17 +11,22 @@ export interface GetPlaylistRequest {
   playlist_id: string;
   market?: string;
   fields?: string;
-  additional_types?: string; // track,episode 등을 섞어 받을 때 사용
+  additional_types?: string;
 }
 
+export interface GetplaylistItemsRequest extends GetPlaylistRequest {
+  offset?: number;
+  limit?: number;
+}
+
+/** playlist items 응답이 "items 배열 + paging" 형태면 보통 이렇게 감쌉니다 */
+export type PlaylistTracksPaging = ApiResponse<PlaylistTrack>;
 
 export type GetCurrentUserPlaylistResponse = ApiResponse<SimplifiedPlaylist>;
 export type GetPlaylistResponse = Playlist;
 
-
-
-export type PlaylistTracksPaging = ApiResponse<PlaylistTrack>;
-
+/** TODO: 여기 ApiResponse<> 안에 뭐가 들어가는지 정해야 함 */
+export type GetplaylistItemsResponse = ApiResponse<PlaylistTrack>;
 
 export interface BasePlaylist {
   collaborative?: boolean;
@@ -35,9 +41,7 @@ export interface BasePlaylist {
   snapshot_id?: string;
   type?: "playlist" | string;
   uri?: string;
-
 }
-
 
 export interface SimplifiedPlaylist extends BasePlaylist {
   tracks?: {
@@ -53,69 +57,7 @@ export interface Playlist extends SimplifiedPlaylist {
 
 export interface PlaylistTrack {
   added_at?: string | null;
-  added_by?: Owner | null; 
+  added_by?: Owner | null;
   is_local?: boolean;
-  track?: Track | Episode | null; 
-}
-
-
-export interface Track {
-  id?: string;
-  name?: string;
-  duration_ms?: number;
-  preview_url?: string | null;
-  external_urls?: ExternalUrls;
-
-  href?: string;
-  uri?: string;
-  type?: "track" | string;
-
-  artists?: Artist[];
-  album?: Album;
-
-  /** 있으면 유용한 필드들 */
-  explicit?: boolean;
-  popularity?: number;
-  track_number?: number;
-  is_playable?: boolean;
-}
-
-export interface Artist {
-  id?: string;
-  name?: string;
-  external_urls?: ExternalUrls;
-
-  href?: string;
-  uri?: string;
-  type?: "artist" | string;
-}
-
-export interface Album {
-  id?: string;
-  name?: string;
-  images?: Image[];
-  external_urls?: ExternalUrls;
-
-  href?: string;
-  uri?: string;
-  type?: "album" | string;
-}
-
-
-export interface Episode {
-  id?: string;
-  name?: string;
-  duration_ms?: number;
-  audio_preview_url?: string | null;
-
-  external_urls?: ExternalUrls;
-  images?: Image[];
-
-  href?: string;
-  uri?: string;
-  type?: "episode" | string;
-
-  /** 있으면 유용 */
-  explicit?: boolean;
-  release_date?: string;
+  track?: Track | Episode | null;
 }

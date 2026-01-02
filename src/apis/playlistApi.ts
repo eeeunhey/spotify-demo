@@ -1,4 +1,4 @@
-import type { GetCurrentUserPlaylistRequest, GetCurrentUserPlaylistResponse, GetPlaylistRequest, GetPlaylistResponse } from "../models/playlist";
+import type { GetCurrentUserPlaylistRequest, GetCurrentUserPlaylistResponse, GetplaylistItemsRequest, GetPlaylistRequest, GetPlaylistResponse } from "../models/playlist";
 import api from "../utils/api";
 
 // 타입을 따로 만들자
@@ -19,5 +19,14 @@ export const getPlaylist = async (params:GetPlaylistRequest):Promise<GetPlaylist
     return response.data;
   }catch(error){
     throw new Error("fail to fetch playlist detail")
+  }
+}
+
+export const getPlaylistItems = async(params:GetplaylistItemsRequest):Promise<GetCurrentUserPlaylistResponse> => {
+  try {
+    const response = await api.get(`/playlists/${params.playlist_id}/tracks`,{params})
+    return response.data;
+  } catch(error) {
+    throw new Error("fail to fetch playlist items")
   }
 }
