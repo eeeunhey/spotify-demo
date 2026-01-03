@@ -13,7 +13,6 @@ import {
   TableBody,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-
 import { Navigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
@@ -22,6 +21,8 @@ import useGetPlaylistItems from "../../hooks/useGetPlaylistItems";
 import PlaylistHeader from "./PlaylistHeader/PlaylistHeader";
 import DesktopPlaylistItem from "./components/DesktopPlaylistItem";
 import { PAGE_LIMIT } from "../../configs/commonConfig";
+import LoginButton from "../../common/components/LoginButton";
+import ErrorMessage from "../../common/components/ErrorMessage";
 
 const PlaylistDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -31,6 +32,7 @@ const PlaylistDetailPage = () => {
     data: playlist,
     isLoading,
     isError,
+    error: playlistError,
   } = useGetPlaylist({
     playlist_id: id,
   });
@@ -58,11 +60,25 @@ const PlaylistDetailPage = () => {
     );
   }
 
-  if (isError || !playlist) {
-    return (
-      <Box p={3}>
-        <Typography variant="h6">플레이리스트를 불러오지 못했어요.</Typography>
+  const anyError = playlistError || playlistItemsError;
+  const is401 = (anyError as any)?.error?.status === 401;
+
+  if (anyError || isError || !playlist) {
+    return is401 ? (
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        height="100%"
+        flexDirection="column"
+      >
+        <Typography variant="h2" fontWeight={700} mb="20px">
+          다시 로그인 하세요
+        </Typography>
+        <LoginButton />
       </Box>
+    ) : (
+      <ErrorMessage errorMessage="Failed to load" />
     );
   }
 
@@ -222,7 +238,7 @@ const PlaylistDetailPage = () => {
                         </Typography>
                       ) : (
                         <Typography variant="body2" color="text.secondary">
-                        더 찾아보기
+                          더 찾아보기
                         </Typography>
                       )}
                     </Box>

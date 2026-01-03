@@ -19,13 +19,8 @@ export interface GetplaylistItemsRequest extends GetPlaylistRequest {
   limit?: number;
 }
 
-
-export type PlaylistTracksPaging = ApiResponse<PlaylistTrack>;
-
 export type GetCurrentUserPlaylistResponse = ApiResponse<SimplifiedPlaylist>;
 export type GetPlaylistResponse = Playlist;
-
-
 export type GetplaylistItemsResponse = ApiResponse<PlaylistTrack>;
 
 export interface BasePlaylist {
@@ -52,7 +47,7 @@ export interface SimplifiedPlaylist extends BasePlaylist {
 
 export interface Playlist extends SimplifiedPlaylist {
   followers?: Followers;
-  tracks?: PlaylistTracksPaging;
+  tracks?: ApiResponse<PlaylistTrack>;
 }
 
 export interface PlaylistTrack extends SimplifiedPlaylist {
@@ -60,4 +55,11 @@ export interface PlaylistTrack extends SimplifiedPlaylist {
   added_by?: Owner | null;
   is_local?: boolean;
   track?: Track | Episode | null;
+}
+
+export interface CreatePlaylistRequest {
+	name:string;
+	playlistPublic?:boolean;
+	collaborative?: boolean;
+	description?: string;
 }

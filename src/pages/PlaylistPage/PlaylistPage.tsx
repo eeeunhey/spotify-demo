@@ -1,7 +1,7 @@
 
 const PlaylistPage = () => {
   return (
-    <div>PlaylistPage</div>
+    <div></div>
   )
 }
 
