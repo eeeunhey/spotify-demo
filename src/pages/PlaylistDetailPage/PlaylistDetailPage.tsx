@@ -13,6 +13,7 @@ import {
   TableBody,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+
 import { Navigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
@@ -21,13 +22,18 @@ import useGetPlaylistItems from "../../hooks/useGetPlaylistItems";
 import PlaylistHeader from "./PlaylistHeader/PlaylistHeader";
 import DesktopPlaylistItem from "./components/DesktopPlaylistItem";
 import { PAGE_LIMIT } from "../../configs/commonConfig";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 const PlaylistDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   if (!id) return <Navigate to="/" />;
 
-  const { data: playlist, isLoading, isError } = useGetPlaylist({ playlist_id: id });
+  const {
+    data: playlist,
+    isLoading,
+    isError,
+  } = useGetPlaylist({
+    playlist_id: id,
+  });
 
   const {
     data: playlistItems,
@@ -112,11 +118,9 @@ const PlaylistDetailPage = () => {
               borderRadius: 2,
               overflow: "auto",
               maxHeight: "calc(100vh - 420px)",
-
               border: "1px solid rgba(255,255,255,0.06)",
               background: "rgba(255,255,255,0.02)",
               boxShadow: "none",
-
               "&::-webkit-scrollbar": { width: 0, height: 0 },
               "&::-webkit-scrollbar-thumb": { background: "transparent" },
               "&::-webkit-scrollbar-track": { background: "transparent" },
@@ -194,7 +198,7 @@ const PlaylistDetailPage = () => {
                   page.items.map((item, itemIndex) => (
                     <DesktopPlaylistItem
                       item={item}
-                      key={`${pageIndex}-${itemIndex}-${item?.track?.id ?? "x"}`}
+                      key={pageIndex * PAGE_LIMIT + itemIndex + 1}
                       index={pageIndex * PAGE_LIMIT + itemIndex + 1}
                     />
                   ))
@@ -218,7 +222,7 @@ const PlaylistDetailPage = () => {
                         </Typography>
                       ) : (
                         <Typography variant="body2" color="text.secondary">
-                              <KeyboardArrowDownIcon />
+                        더 찾아보기
                         </Typography>
                       )}
                     </Box>
