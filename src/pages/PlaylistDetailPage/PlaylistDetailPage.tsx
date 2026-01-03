@@ -9,11 +9,14 @@ import {
   TableHead,
   TableRow,
   TableCell,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useInView } from "react-intersection-observer";
-
+import TimerOutlinedIcon from "@mui/icons-material/TimerOutlined";
+import SearchIcon from "@mui/icons-material/Search";
 import useGetPlaylist from "../../hooks/useGetPlaylist";
 import useGetPlaylistItems from "../../hooks/useGetPlaylistItems";
 import PlaylistHeader from "./PlaylistHeader/PlaylistHeader";
@@ -38,9 +41,20 @@ const LoadingSpinner = () => (
   </Box>
 );
 
+const EmptyWrap = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(4),
+}));
+
+const EmptyTitle = styled(Typography)(({ theme }) => ({
+  fontWeight: 700,
+  marginBottom: theme.spacing(2),
+}));
+
 const PlaylistDetailPage = () => {
   const { id } = useParams<{ id: string }>();
-  const playlistId = id ?? ""; // 훅 순서 고정(룰 오브 훅스)
+  const playlistId = id ?? "";
+
+  const [searchValue, setSearchValue] = useState("");
 
   const {
     data: playlist,
@@ -94,62 +108,85 @@ const PlaylistDetailPage = () => {
     );
   }
 
+  const isEmptyPlaylist = (playlist?.tracks?.total ?? 0) === 0;
+
   return (
     <Box height="100%">
       <PlaylistHeader playlist={playlist} />
 
-      <StyledTableContainer>
-        <Table stickyHeader>
-          <TableHead>
-            <TableRow>
-              <TableCell>#</TableCell>
-              <TableCell>제목</TableCell>
-              <TableCell>앨범</TableCell>
-              <TableCell>추가된 날짜</TableCell>
-              <TableCell align="right">길이</TableCell>
-            </TableRow>
-          </TableHead>
+      {isEmptyPlaylist ? (
+        <EmptyWrap>
+          <EmptyTitle variant="h6">Let&apos;s find something for your playlist</EmptyTitle>
 
-          <TableBody>
-            {isPlaylistItemsLoading ? (
+          <TextField
+            fullWidth
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            placeholder="Search for songs or episodes"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </EmptyWrap>
+      ) : (
+        <StyledTableContainer>
+          <Table stickyHeader>
+            <TableHead>
               <TableRow>
-                <TableCell colSpan={5}>
-                  <LoadingSpinner />
+                <TableCell>#</TableCell>
+                <TableCell>제목</TableCell>
+                <TableCell>앨범</TableCell>
+                <TableCell>추가된 날짜</TableCell>
+                <TableCell align="right">
+                  <TimerOutlinedIcon />
                 </TableCell>
               </TableRow>
-            ) : playlistItemsError ? (
-              <TableRow>
-                <TableCell colSpan={5}>
-                  <Typography color="error">트랙을 불러오지 못했어요.</Typography>
-                </TableCell>
-              </TableRow>
-            ) : (
-              <>
-                {flatItems.map((item: any, index: number) => (
-                  <DesktopPlaylistItem
-                    key={item?.track?.id ?? `${index}`}
-                    item={item}
-                    index={index}
-                  />
-                ))}
+            </TableHead>
 
-                {/* sentinel */}
-                <TableRow sx={{ height: "5px" }} ref={ref}>
-                  <TableCell colSpan={5} />
+            <TableBody>
+              {isPlaylistItemsLoading ? (
+                <TableRow>
+                  <TableCell colSpan={5}>
+                    <LoadingSpinner />
+                  </TableCell>
                 </TableRow>
+              ) : playlistItemsError ? (
+                <TableRow>
+                  <TableCell colSpan={5}>
+                    <Typography color="error">트랙을 불러오지 못했어요.</Typography>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                <>
+                  {flatItems.map((item: any, index: number) => (
+                    <DesktopPlaylistItem
+                      key={item?.track?.id ?? `${index}`}
+                      item={item}
+                      index={index}
+                    />
+                  ))}
 
-                {isFetchingNextPage && (
-                  <TableRow>
-                    <TableCell colSpan={5}>
-                      <LoadingSpinner />
-                    </TableCell>
+                  <TableRow sx={{ height: "5px" }} ref={ref}>
+                    <TableCell colSpan={5} />
                   </TableRow>
-                )}
-              </>
-            )}
-          </TableBody>
-        </Table>
-      </StyledTableContainer>
+
+                  {isFetchingNextPage && (
+                    <TableRow>
+                      <TableCell colSpan={5}>
+                        <LoadingSpinner />
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </>
+              )}
+            </TableBody>
+          </Table>
+        </StyledTableContainer>
+      )}
     </Box>
   );
 };

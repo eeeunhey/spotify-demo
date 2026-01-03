@@ -5,6 +5,11 @@ import type { Episode, Track } from "../../models/track";
 import { formatDate, formatDuration } from "../../utils/date";
 
 
+interface DesktopPlaylistItemProps {
+  index: number;
+  item: PlaylistTrack;
+}
+
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:hover": {
     backgroundColor: theme.palette.action.hover,
@@ -14,29 +19,32 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const isEpisode = (track?: Track | Episode | null): track is Episode => {
-  return track?.type === "episode";
+const isEpisode = (track: Track | Episode): track is Episode => {
+  return "description" in track;
 };
 
-type Props = {
-  item: PlaylistTrack;
-  index: number; // 테이블에서 # 표시용
-};
+const DesktopPlaylistItem = ({ item, index }: DesktopPlaylistItemProps) => {
+  const track = item?.track;
 
-const DesktopPlaylistItem = ({ item, index }: Props) => {
-  const track = item.track;
+  if (!track) {
+    return (
+      <StyledTableRow>
+        <TableCell>{index + 1}</TableCell>
+        <TableCell>Unknown</TableCell>
+        <TableCell>N/A</TableCell>
+        <TableCell>{formatDate(item?.added_at)}</TableCell>
+        <TableCell align="right">00:00</TableCell>
+      </StyledTableRow>
+    );
+  }
 
   return (
     <StyledTableRow>
       <TableCell>{index + 1}</TableCell>
-      <TableCell>{track?.name ?? "Unknown"}</TableCell>
-      <TableCell>
-        {isEpisode(track) ? "—" : (track as Track)?.album?.name ?? "—"}
-      </TableCell>
-      <TableCell>{formatDate(item.added_at)}</TableCell>
-      <TableCell align="right">
-        {isEpisode(track) ? "N/A" : formatDuration((track as Track)?.duration_ms)}
-      </TableCell>
+      <TableCell>{track.name ?? "no name"}</TableCell>
+      <TableCell>{isEpisode(track) ? "N/A" : track.album?.name ?? "Unknown"}</TableCell>
+      <TableCell>{formatDate(item?.added_at)}</TableCell>
+      <TableCell align="right">{formatDuration(track.duration_ms)}</TableCell>
     </StyledTableRow>
   );
 };
