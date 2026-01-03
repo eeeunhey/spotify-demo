@@ -1,6 +1,6 @@
 
-import { CLIENT_ID } from '../configs/authConfig';
-import { REDIRECT_URI, SCOPES } from '../configs/commonConfig';
+import { CLIENT_ID, SCOPES } from '../configs/authConfig';
+import { REDIRECT_URI } from '../configs/commonConfig';
 import type { AuthUrlParams } from '../models/auth';
 import { base64encode, generateRandomString, sha256 } from './crypto';
 

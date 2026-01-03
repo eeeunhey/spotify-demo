@@ -19,13 +19,13 @@ export interface GetplaylistItemsRequest extends GetPlaylistRequest {
   limit?: number;
 }
 
-/** playlist items 응답이 "items 배열 + paging" 형태면 보통 이렇게 감쌉니다 */
+
 export type PlaylistTracksPaging = ApiResponse<PlaylistTrack>;
 
 export type GetCurrentUserPlaylistResponse = ApiResponse<SimplifiedPlaylist>;
 export type GetPlaylistResponse = Playlist;
 
-/** TODO: 여기 ApiResponse<> 안에 뭐가 들어가는지 정해야 함 */
+
 export type GetplaylistItemsResponse = ApiResponse<PlaylistTrack>;
 
 export interface BasePlaylist {
@@ -55,7 +55,7 @@ export interface Playlist extends SimplifiedPlaylist {
   tracks?: PlaylistTracksPaging;
 }
 
-export interface PlaylistTrack {
+export interface PlaylistTrack extends SimplifiedPlaylist {
   added_at?: string | null;
   added_by?: Owner | null;
   is_local?: boolean;

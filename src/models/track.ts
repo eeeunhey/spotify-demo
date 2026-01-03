@@ -1,75 +1,78 @@
-import type { ExternalUrls, Image } from "./commonType";
-
-
-export interface Restriction {
-  reason?: string;
-}
+import type { SimplifiedAlbum } from "./album";
+import type { Artist } from "./artist";
+import type { ExternalUrls, Restriction,Image } from "./commonType";
 
 export interface Track {
-
-  id?: string;
-  name?: string;
-  duration_ms?: number;
-  preview_url?: string | null;
-  external_urls?: ExternalUrls;
-  href?: string;
-  uri?: string;
-  type?: "track" | string;
-
+  album?: SimplifiedAlbum;
   artists?: Artist[];
-  album?: Album;
-  explicit?: boolean;
-  popularity?: number;
-  track_number?: number;
-  is_playable?: boolean;
-
-
   available_markets?: string[];
   disc_number?: number;
-
+  duration_ms?: number;
+  explicit?: boolean;
   external_ids?: {
-    isrc?: string;
-    ean?: string;
-    upc?: string;
+    isrc: string;
+    ean: string;
+    upc: string;
   };
-
+  external_urls?: ExternalUrls;
+  href?: string;
+  id?: string;
+  is_playable?: boolean;
   linked_from?: Track;
   restrictions?: Restriction;
+  name?: string;
+  popularity?: number;
+  preview_url?: string | null;
+  track_number?: number;
+  type?: "track";
+  uri?: string;
   is_local?: boolean;
 }
 
-export interface Artist {
-  id?: string;
-  name?: string;
-  external_urls?: ExternalUrls;
-  href?: string;
-  uri?: string;
-  type?: "artist" | string;
-}
-
-export interface Album {
-  id?: string;
-  name?: string;
-  images?: Image[];
-  external_urls?: ExternalUrls;
-  href?: string;
-  uri?: string;
-  type?: "album" | string;
-}
-
 export interface Episode {
-  id?: string;
-  name?: string;
-  duration_ms?: number;
-  audio_preview_url?: string | null;
+  description: string;
+  html_description: string;
+  duration_ms: number;
+  explicit: boolean;
+  external_urls: ExternalUrls;
+  href: string;
+  id: string;
+  images: Image[];
+  is_externally_hosted: boolean;
+  is_playable: boolean;
+  name: string;
+  release_date: string;
+  release_date_precision: string;
+  type: "episode";
+  uri: string;
+  resume_point?: {
+    fully_played?: boolean;
+    resume_position_ms?: number;
+  };
+  restrictions?: Restriction;
+  show: Show;
+}
+export interface Show {
+  available_markets: string[];
+  copyrights: CopyrightObject[];
+  description: string;
+  html_description: string;
+  explicit: boolean;
+  external_urls: ExternalUrls;
+  href: string;
+  id: string;
+  images: Image[];
+  is_externally_hosted: boolean;
+  languages: string[];
+  media_type: string;
+  name: string;
+  publisher: string;
+  type: "show";
+  uri: string;
+  total_episodes: number;
+}
 
-  external_urls?: ExternalUrls;
-  images?: Image[];
-
-  href?: string;
-  uri?: string;
-  type?: "episode" | string;
-
-  explicit?: boolean;
-  release_date?: string;
+export interface CopyrightObject {
+  text: string;
+  type: string;
 }

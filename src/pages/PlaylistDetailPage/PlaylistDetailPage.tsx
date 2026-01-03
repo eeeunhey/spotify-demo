@@ -1,152 +1,50 @@
-import { Navigate, useParams } from "react-router-dom";
 import {
   Box,
   CircularProgress,
-  Skeleton,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   TextField,
   Typography,
   InputAdornment,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  Paper,
+  TableBody,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useInView } from "react-intersection-observer";
-import TimerOutlinedIcon from "@mui/icons-material/TimerOutlined";
 import SearchIcon from "@mui/icons-material/Search";
-
+import { Navigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 import useGetPlaylist from "../../hooks/useGetPlaylist";
 import useGetPlaylistItems from "../../hooks/useGetPlaylistItems";
 import PlaylistHeader from "./PlaylistHeader/PlaylistHeader";
-import DesktopPlaylistItem from "./DesktopPlaylistItem";
-
-const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
-  background: theme.palette.background.paper,
-  color: theme.palette.common.white,
-  height: "calc(100% - 64px)",
-  borderRadius: 8,
-  overflowY: "auto",
-  "&::-webkit-scrollbar": { display: "none" },
-  msOverflowStyle: "none",
-  scrollbarWidth: "none",
-}));
-
-const HeadCell = styled(TableCell)(({ theme }) => ({
-  borderBottom: `1px solid ${theme.palette.divider}`,
-  color: theme.palette.text.secondary,
-  fontWeight: 700,
-  background: theme.palette.background.paper,
-}));
-
-const SkeletonRow = () => (
-  <TableRow>
-    <TableCell sx={{ borderBottom: "none", width: 56 }}>
-      <Skeleton variant="text" width={18} />
-    </TableCell>
-    <TableCell sx={{ borderBottom: "none" }}>
-      <Box display="flex" alignItems="center" gap={2}>
-        <Skeleton variant="rounded" width={48} height={48} />
-        <Box flex={1} minWidth={0}>
-          <Skeleton variant="text" width="60%" />
-          <Skeleton variant="text" width="40%" />
-        </Box>
-      </Box>
-    </TableCell>
-    <TableCell sx={{ borderBottom: "none" }}>
-      <Skeleton variant="text" width="50%" />
-    </TableCell>
-    <TableCell sx={{ borderBottom: "none", width: 140 }}>
-      <Skeleton variant="text" width="60%" />
-    </TableCell>
-    <TableCell sx={{ borderBottom: "none", width: 90 }} align="right">
-      <Skeleton variant="text" width="50%" />
-    </TableCell>
-  </TableRow>
-);
-
-const EmptyState = () => (
-  <Box px={3} py={6}>
-    <Typography variant="h5" fontWeight={800} mb={2}>
-      플레이리스트에 곡이 없어요
-    </Typography>
-
-    <Typography color="text.secondary" mb={3}>
-      노래나 에피소드를 검색해서 플레이리스트를 채워보세요.
-    </Typography>
-
-    <TextField
-      fullWidth
-      placeholder="곡 또는 에피소드 검색"
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <SearchIcon fontSize="small" />
-          </InputAdornment>
-        ),
-      }}
-      sx={{
-        maxWidth: 520,
-        "& .MuiOutlinedInput-root": {
-          borderRadius: 999,
-        },
-      }}
-    />
-  </Box>
-);
+import DesktopPlaylistItem from "./components/DesktopPlaylistItem";
+import { PAGE_LIMIT } from "../../configs/commonConfig";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 const PlaylistDetailPage = () => {
   const { id } = useParams<{ id: string }>();
-  const playlistId = id ?? "";
+  if (!id) return <Navigate to="/" />;
 
-  const {
-    data: playlist,
-    isLoading: isPlaylistLoading,
-    isError: isPlaylistError,
-  } = useGetPlaylist({ playlist_id: playlistId });
+  const { data: playlist, isLoading, isError } = useGetPlaylist({ playlist_id: id });
 
   const {
     data: playlistItems,
     isLoading: isPlaylistItemsLoading,
     error: playlistItemsError,
+    fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    fetchNextPage,
-  } = useGetPlaylistItems({
-    playlist_id: playlistId,
-    limit: 10,
-  });
+  } = useGetPlaylistItems({ playlist_id: id, limit: PAGE_LIMIT });
 
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [rootEl, setRootEl] = useState<Element | null>(null);
+  const { ref, inView } = useInView({ threshold: 0, rootMargin: "600px" });
 
   useEffect(() => {
-    setRootEl(containerRef.current);
-  }, []);
-
-  const [sentinelRef, inView] = useInView({
-    root: rootEl,
-    threshold: 0,
-    rootMargin: "200px",
-  });
-
-  useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
+    if (inView && hasNextPage && !isFetchingNextPage) fetchNextPage();
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  if (!id) return <Navigate to="/" replace />;
-
-  const flatItems = useMemo(() => {
-    const pages = playlistItems?.pages ?? [];
-    return pages.flatMap((p: any) => p.items ?? []);
-  }, [playlistItems]);
-
-  if (isPlaylistLoading) {
+  if (isLoading) {
     return (
       <Box p={3} display="flex" justifyContent="center">
         <CircularProgress />
@@ -154,7 +52,7 @@ const PlaylistDetailPage = () => {
     );
   }
 
-  if (isPlaylistError || !playlist) {
+  if (isError || !playlist) {
     return (
       <Box p={3}>
         <Typography variant="h6">플레이리스트를 불러오지 못했어요.</Typography>
@@ -162,71 +60,175 @@ const PlaylistDetailPage = () => {
     );
   }
 
-  const isEmpty = (playlist?.tracks?.total ?? 0) === 0 || flatItems.length === 0;
+  const isEmpty = (playlist?.tracks?.total ?? 0) === 0;
 
   return (
-    <Box height="100%">
+    <Box>
       <PlaylistHeader playlist={playlist} />
 
-      <StyledTableContainer ref={containerRef}>
-        {isEmpty && !isPlaylistItemsLoading && !playlistItemsError ? (
-          <EmptyState />
+      <Box p={3}>
+        {isPlaylistItemsLoading ? (
+          <Box display="flex" justifyContent="center" py={4}>
+            <CircularProgress />
+          </Box>
+        ) : playlistItemsError ? (
+          <Typography color="error">트랙을 불러오지 못했어요.</Typography>
+        ) : isEmpty ? (
+          <form onSubmit={(e) => e.preventDefault()}>
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+              py={8}
+              gap={2}
+            >
+              <TextField
+                name="search"
+                placeholder="플레이리스트에서 검색"
+                size="small"
+                sx={{
+                  width: 360,
+                  "& .MuiOutlinedInput-root": { borderRadius: 999 },
+                }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon fontSize="small" />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <Typography variant="body2" color="text.secondary">
+                이 플레이리스트에는 아직 트랙이 없어요.
+              </Typography>
+            </Box>
+          </form>
         ) : (
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                <HeadCell sx={{ width: 56 }}>#</HeadCell>
-                <HeadCell>제목</HeadCell>
-                <HeadCell>앨범</HeadCell>
-                <HeadCell sx={{ width: 140 }}>추가한 날짜</HeadCell>
-                <HeadCell sx={{ width: 90 }} align="right">
-                  <TimerOutlinedIcon fontSize="small" />
-                </HeadCell>
-              </TableRow>
-            </TableHead>
+          <TableContainer
+            component={Paper}
+            sx={{
+              width: "100%",
+              borderRadius: 2,
+              overflow: "auto",
+              maxHeight: "calc(100vh - 420px)",
 
-            <TableBody>
-              {isPlaylistItemsLoading ? (
-                <>
-                  {Array.from({ length: 8 }).map((_, i) => (
-                    <SkeletonRow key={i} />
-                  ))}
-                </>
-              ) : playlistItemsError ? (
+              border: "1px solid rgba(255,255,255,0.06)",
+              background: "rgba(255,255,255,0.02)",
+              boxShadow: "none",
+
+              "&::-webkit-scrollbar": { width: 0, height: 0 },
+              "&::-webkit-scrollbar-thumb": { background: "transparent" },
+              "&::-webkit-scrollbar-track": { background: "transparent" },
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+            }}
+          >
+            <Table stickyHeader sx={{ width: "100%" }} size="small">
+              <TableHead>
                 <TableRow>
-                  <TableCell colSpan={5} sx={{ borderBottom: "none" }}>
-                    <Typography color="error">
-                      트랙을 불러오지 못했어요.
-                    </Typography>
+                  <TableCell
+                    sx={{
+                      width: 56,
+                      fontSize: 12,
+                      color: "text.secondary",
+                      borderBottom: "1px solid rgba(255,255,255,0.06)",
+                      backgroundColor: "rgba(18,18,18,0.9)",
+                      backdropFilter: "blur(8px)",
+                    }}
+                  >
+                    #
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      fontSize: 12,
+                      color: "text.secondary",
+                      borderBottom: "1px solid rgba(255,255,255,0.06)",
+                      backgroundColor: "rgba(18,18,18,0.9)",
+                      backdropFilter: "blur(8px)",
+                    }}
+                  >
+                    Title
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      fontSize: 12,
+                      color: "text.secondary",
+                      borderBottom: "1px solid rgba(255,255,255,0.06)",
+                      backgroundColor: "rgba(18,18,18,0.9)",
+                      backdropFilter: "blur(8px)",
+                    }}
+                  >
+                    Album
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      width: 140,
+                      fontSize: 12,
+                      color: "text.secondary",
+                      borderBottom: "1px solid rgba(255,255,255,0.06)",
+                      backgroundColor: "rgba(18,18,18,0.9)",
+                      backdropFilter: "blur(8px)",
+                    }}
+                  >
+                    Date added
+                  </TableCell>
+                  <TableCell
+                    align="right"
+                    sx={{
+                      width: 110,
+                      fontSize: 12,
+                      color: "text.secondary",
+                      borderBottom: "1px solid rgba(255,255,255,0.06)",
+                      backgroundColor: "rgba(18,18,18,0.9)",
+                      backdropFilter: "blur(8px)",
+                    }}
+                  >
+                    Duration
                   </TableCell>
                 </TableRow>
-              ) : (
-                <>
-                  {flatItems.map((item: any, index: number) => (
+              </TableHead>
+
+              <TableBody>
+                {playlistItems?.pages.map((page, pageIndex) =>
+                  page.items.map((item, itemIndex) => (
                     <DesktopPlaylistItem
-                      key={item?.track?.id ?? item?.track?.uri ?? `${index}`}
                       item={item}
-                      index={index}
+                      key={`${pageIndex}-${itemIndex}-${item?.track?.id ?? "x"}`}
+                      index={pageIndex * PAGE_LIMIT + itemIndex + 1}
                     />
-                  ))}
+                  ))
+                )}
 
-                  <TableRow ref={sentinelRef as any}>
-                    <TableCell colSpan={5} sx={{ borderBottom: "none", height: 8 }} />
-                  </TableRow>
-
-                  {isFetchingNextPage && (
-                    <>
-                      {Array.from({ length: 3 }).map((_, i) => (
-                        <SkeletonRow key={`next-${i}`} />
-                      ))}
-                    </>
-                  )}
-                </>
-              )}
-            </TableBody>
-          </Table>
+                <TableRow>
+                  <TableCell colSpan={5} sx={{ borderBottom: "none" }}>
+                    <Box
+                      ref={ref}
+                      display="flex"
+                      justifyContent="center"
+                      alignItems="center"
+                      py={2}
+                      sx={{ color: "text.secondary" }}
+                    >
+                      {isFetchingNextPage ? (
+                        <CircularProgress size={22} />
+                      ) : hasNextPage ? (
+                        <Typography variant="body2" color="text.secondary">
+                          더 불러오는 중…
+                        </Typography>
+                      ) : (
+                        <Typography variant="body2" color="text.secondary">
+                              <KeyboardArrowDownIcon />
+                        </Typography>
+                      )}
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
         )}
-      </StyledTableContainer>
+      </Box>
     </Box>
   );
 };

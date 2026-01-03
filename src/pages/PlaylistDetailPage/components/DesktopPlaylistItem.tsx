@@ -1,9 +1,8 @@
 import { TableCell, TableRow } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import type { PlaylistTrack } from "../../models/playlist";
-import type { Episode, Track } from "../../models/track";
-import { formatDate, formatDuration } from "../../utils/date";
-
+import type { PlaylistTrack } from "../../../models/playlist";
+import type { Episode, Track } from "../../../models/track";
+import { formatDate, formatDuration } from "../../../utils/date";
 
 interface DesktopPlaylistItemProps {
   index: number;
@@ -11,12 +10,8 @@ interface DesktopPlaylistItemProps {
 }
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:hover": {
-    backgroundColor: theme.palette.action.hover,
-  },
-  "& .MuiTableCell-root": {
-    borderBottom: "none",
-  },
+  "&:hover": { backgroundColor: theme.palette.action.hover },
+  "& .MuiTableCell-root": { borderBottom: "none" },
 }));
 
 function isEpisode(track: Track | Episode): track is Episode {
@@ -29,27 +24,26 @@ const DesktopPlaylistItem = ({ item, index }: DesktopPlaylistItemProps) => {
   if (!track) {
     return (
       <StyledTableRow>
-        <TableCell>{index + 1}</TableCell>
+        <TableCell>{index}</TableCell>
         <TableCell>Unknown</TableCell>
         <TableCell>Unknown</TableCell>
         <TableCell>{formatDate(item?.added_at)}</TableCell>
-        <TableCell align="right">00:00</TableCell>
+        <TableCell align="right">{formatDuration(0)}</TableCell>
       </StyledTableRow>
     );
   }
 
-  const title = track.name ?? "no name";
-  const albumName = isEpisode(track) ? "N/A" : track.album?.name ?? "Unknown";
-  const addedAt = formatDate(item?.added_at ?? null);
-  const duration = formatDuration(track.duration_ms);
+  const title = track?.name ?? "Unknown";
+  const album = isEpisode(track) ? "Episode" : track?.album?.name ?? "Unknown";
+  const durationMs = track?.duration_ms ?? 0;
 
   return (
     <StyledTableRow>
-      <TableCell>{index + 1}</TableCell>
+      <TableCell>{index}</TableCell>
       <TableCell>{title}</TableCell>
-      <TableCell>{albumName}</TableCell>
-      <TableCell>{addedAt}</TableCell>
-      <TableCell align="right">{duration}</TableCell>
+      <TableCell>{album}</TableCell>
+      <TableCell>{formatDate(item?.added_at)}</TableCell>
+      <TableCell align="right">{formatDuration(durationMs)}</TableCell>
     </StyledTableRow>
   );
 };
