@@ -19,32 +19,37 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const isEpisode = (track: Track | Episode): track is Episode => {
+function isEpisode(track: Track | Episode): track is Episode {
   return "description" in track;
-};
+}
 
 const DesktopPlaylistItem = ({ item, index }: DesktopPlaylistItemProps) => {
-  const track = item?.track;
+  const track = item?.track ?? null;
 
   if (!track) {
     return (
       <StyledTableRow>
         <TableCell>{index + 1}</TableCell>
         <TableCell>Unknown</TableCell>
-        <TableCell>N/A</TableCell>
+        <TableCell>Unknown</TableCell>
         <TableCell>{formatDate(item?.added_at)}</TableCell>
         <TableCell align="right">00:00</TableCell>
       </StyledTableRow>
     );
   }
 
+  const title = track.name ?? "no name";
+  const albumName = isEpisode(track) ? "N/A" : track.album?.name ?? "Unknown";
+  const addedAt = formatDate(item?.added_at ?? null);
+  const duration = formatDuration(track.duration_ms);
+
   return (
     <StyledTableRow>
       <TableCell>{index + 1}</TableCell>
-      <TableCell>{track.name ?? "no name"}</TableCell>
-      <TableCell>{isEpisode(track) ? "N/A" : track.album?.name ?? "Unknown"}</TableCell>
-      <TableCell>{formatDate(item?.added_at)}</TableCell>
-      <TableCell align="right">{formatDuration(track.duration_ms)}</TableCell>
+      <TableCell>{title}</TableCell>
+      <TableCell>{albumName}</TableCell>
+      <TableCell>{addedAt}</TableCell>
+      <TableCell align="right">{duration}</TableCell>
     </StyledTableRow>
   );
 };
