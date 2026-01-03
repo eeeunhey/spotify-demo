@@ -2,7 +2,7 @@
 import { styled } from "@mui/material/styles";
 import { Box, Paper, Typography } from "@mui/material";
 
-export const PageWrap = styled(Box)(({ theme }) => ({
+export const PageWrap = styled(Box)(({  }) => ({
   width: "100%",
 }));
 
@@ -42,13 +42,13 @@ export const SearchPanel = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(2),
 }));
 
-export const SearchPanelHeader = styled(Box)(({ theme }) => ({
+export const SearchPanelHeader = styled(Box)(({  }) => ({
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
 }));
 
-export const SearchTitle = styled(Typography)(({ theme }) => ({
+export const SearchTitle = styled(Typography)(({  }) => ({
   fontSize: 28,
   fontWeight: 800,
   letterSpacing: -0.2,
