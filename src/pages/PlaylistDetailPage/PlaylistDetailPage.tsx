@@ -1,22 +1,23 @@
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import {
   Box,
   CircularProgress,
-  Typography,
+  InputBase,
+  Paper,
+  Skeleton,
   Table,
   TableBody,
+  TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  TableCell,
-  TextField,
-  InputAdornment,
+  Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useEffect, useMemo, useState } from "react";
-import { useInView } from "react-intersection-observer";
-import TimerOutlinedIcon from "@mui/icons-material/TimerOutlined";
 import SearchIcon from "@mui/icons-material/Search";
+import TimerOutlinedIcon from "@mui/icons-material/TimerOutlined";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useInView } from "react-intersection-observer";
 import useGetPlaylist from "../../hooks/useGetPlaylist";
 import useGetPlaylistItems from "../../hooks/useGetPlaylistItems";
 import PlaylistHeader from "./PlaylistHeader/PlaylistHeader";
@@ -28,33 +29,28 @@ const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
   height: "calc(100% - 64px)",
   borderRadius: "8px",
   overflowY: "auto",
-  "&::-webkit-scrollbar": {
-    display: "none",
-  },
+  "&::-webkit-scrollbar": { display: "none" },
   msOverflowStyle: "none",
   scrollbarWidth: "none",
 }));
 
-const LoadingSpinner = () => (
-  <Box py={2} display="flex" justifyContent="center">
-    <CircularProgress size={22} />
-  </Box>
-);
-
-const EmptyWrap = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(4),
-}));
-
-const EmptyTitle = styled(Typography)(({ theme }) => ({
-  fontWeight: 700,
-  marginBottom: theme.spacing(2),
+const SearchWrap = styled(Paper)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  gap: theme.spacing(1),
+  padding: theme.spacing(1.2, 1.5),
+  borderRadius: 12,
+  background: theme.palette.action.hover,
 }));
 
 const PlaylistDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const playlistId = id ?? "";
+  const navigate = useNavigate();
 
-  const [searchValue, setSearchValue] = useState("");
+  const [search, setSearch] = useState("");
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const {
     data: playlist,
@@ -74,23 +70,22 @@ const PlaylistDetailPage = () => {
     limit: 10,
   });
 
-  const [ref, inView] = useInView({
+  const { ref: sentinelRef, inView } = useInView({
+    root: containerRef.current,
     threshold: 0,
     rootMargin: "200px",
   });
 
   useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
+    if (inView && hasNextPage && !isFetchingNextPage) fetchNextPage();
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
-
-  if (!id) return <Navigate to="/" />;
 
   const flatItems = useMemo(() => {
     const pages = playlistItems?.pages ?? [];
     return pages.flatMap((p: any) => p.items ?? []);
   }, [playlistItems]);
+
+  if (!id) return <Navigate to="/" replace />;
 
   if (isPlaylistLoading) {
     return (
@@ -108,32 +103,44 @@ const PlaylistDetailPage = () => {
     );
   }
 
-  const isEmptyPlaylist = (playlist?.tracks?.total ?? 0) === 0;
+  const isEmpty = !isPlaylistItemsLoading && !playlistItemsError && flatItems.length === 0;
+
+  const onSubmitSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = search.trim();
+    if (!q) return;
+    navigate(`/search?q=${encodeURIComponent(q)}`);
+  };
 
   return (
     <Box height="100%">
       <PlaylistHeader playlist={playlist} />
 
-      {isEmptyPlaylist ? (
-        <EmptyWrap>
-          <EmptyTitle variant="h6">Let&apos;s find something for your playlist</EmptyTitle>
+      <StyledTableContainer ref={containerRef}>
+        {isEmpty ? (
+          <Box height="100%" display="flex" alignItems="center" justifyContent="center" px={2}>
+            <Box width="min(520px, 100%)">
+              <Typography variant="h6" mb={1.5}>
+                플레이리스트에 트랙이 없어요
+              </Typography>
+              <Typography variant="body2" color="text.secondary" mb={2.5}>
+                검색으로 음악을 찾아서 추가해보세요.
+              </Typography>
 
-          <TextField
-            fullWidth
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            placeholder="Search for songs or episodes"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </EmptyWrap>
-      ) : (
-        <StyledTableContainer>
+              <Box component="form" onSubmit={onSubmitSearch}>
+                <SearchWrap elevation={0}>
+                  <SearchIcon fontSize="small" />
+                  <InputBase
+                    fullWidth
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="곡/앨범을 검색해보세요"
+                  />
+                </SearchWrap>
+              </Box>
+            </Box>
+          </Box>
+        ) : (
           <Table stickyHeader>
             <TableHead>
               <TableRow>
@@ -149,11 +156,26 @@ const PlaylistDetailPage = () => {
 
             <TableBody>
               {isPlaylistItemsLoading ? (
-                <TableRow>
-                  <TableCell colSpan={5}>
-                    <LoadingSpinner />
-                  </TableCell>
-                </TableRow>
+                Array.from({ length: 10 }).map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell width={60}>
+                      <Skeleton variant="text" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" />
+                      <Skeleton variant="text" width="60%" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" />
+                    </TableCell>
+                    <TableCell width={140}>
+                      <Skeleton variant="text" />
+                    </TableCell>
+                    <TableCell width={90} align="right">
+                      <Skeleton variant="text" />
+                    </TableCell>
+                  </TableRow>
+                ))
               ) : playlistItemsError ? (
                 <TableRow>
                   <TableCell colSpan={5}>
@@ -170,23 +192,40 @@ const PlaylistDetailPage = () => {
                     />
                   ))}
 
-                  <TableRow sx={{ height: "5px" }} ref={ref}>
-                    <TableCell colSpan={5} />
+                  <TableRow ref={sentinelRef}>
+                    <TableCell colSpan={5} sx={{ p: 0, height: 1 }} />
                   </TableRow>
 
                   {isFetchingNextPage && (
-                    <TableRow>
-                      <TableCell colSpan={5}>
-                        <LoadingSpinner />
-                      </TableCell>
-                    </TableRow>
+                    <>
+                      {Array.from({ length: 3 }).map((_, i) => (
+                        <TableRow key={`fetch-${i}`}>
+                          <TableCell width={60}>
+                            <Skeleton variant="text" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton variant="text" />
+                            <Skeleton variant="text" width="60%" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton variant="text" />
+                          </TableCell>
+                          <TableCell width={140}>
+                            <Skeleton variant="text" />
+                          </TableCell>
+                          <TableCell width={90} align="right">
+                            <Skeleton variant="text" />
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </>
                   )}
                 </>
               )}
             </TableBody>
           </Table>
-        </StyledTableContainer>
-      )}
+        )}
+      </StyledTableContainer>
     </Box>
   );
 };
