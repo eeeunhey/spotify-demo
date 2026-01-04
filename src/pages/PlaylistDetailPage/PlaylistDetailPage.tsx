@@ -17,7 +17,6 @@ import useGetPlaylistItems from "../../hooks/useGetPlaylistItems";
 import PlaylistHeader from "./PlaylistHeader/PlaylistHeader";
 import DesktopPlaylistItem from "./components/DesktopPlaylistItem";
 import { PAGE_LIMIT } from "../../configs/commonConfig";
-import LoginButton from "../../common/components/LoginButton";
 import ErrorMessage from "../../common/components/ErrorMessage";
 
 import {
@@ -34,9 +33,17 @@ import {
 } from "./PlaylistDetailPage.styles";
 import EmptyPlaylistWithSearch from "./components/EmptyPlaylistWithSearch";
 
+import LoginRequiredPanel from "../../common/components/LoginRequiredPanel";
+import axios from "axios";
+
 const PlaylistDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   if (!id) return <Navigate to="/" />;
+
+  const accessToken = localStorage.getItem("access_token");
+  if (!accessToken) {
+    return <LoginRequiredPanel subtitle="로그인이 필요한 기능이에요." />;
+  }
 
   const {
     data: playlist,
@@ -69,22 +76,14 @@ const PlaylistDetailPage = () => {
   }
 
   const anyError = playlistError || playlistItemsError;
-  const is401 = (anyError as any)?.error?.status === 401;
+
+  const isAuthError =
+    axios.isAxiosError(anyError) &&
+    (anyError.response?.status === 401 || anyError.response?.status === 403);
 
   if (anyError || isError || !playlist) {
-    return is401 ? (
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        height="100%"
-        flexDirection="column"
-      >
-        <Typography variant="h2" fontWeight={700} mb="20px">
-          다시 로그인 하세요
-        </Typography>
-        <LoginButton />
-      </Box>
+    return isAuthError ? (
+      <LoginRequiredPanel subtitle="세션이 만료됐어요. 다시 로그인 해주세요." />
     ) : (
       <ErrorMessage errorMessage="Failed to load" />
     );
@@ -96,6 +95,7 @@ const PlaylistDetailPage = () => {
     <PageWrap>
       <PlaylistHeader playlist={playlist} />
       {isEmpty && <EmptyPlaylistWithSearch />}
+
       <BodyWrap>
         {isPlaylistItemsLoading ? (
           <Box display="flex" justifyContent="center" py={4}>
@@ -146,10 +146,7 @@ const PlaylistDetailPage = () => {
                           더 불러오는 중…
                         </Typography>
                       ) : (
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                        ></Typography>
+                        <Typography variant="body2" color="text.secondary" />
                       )}
                     </LoadMoreRow>
                   </BottomCell>

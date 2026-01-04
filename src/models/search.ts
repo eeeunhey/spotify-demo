@@ -2,7 +2,7 @@ import type { SimplifiedAlbum } from "./album";
 import type { ApiResponse } from "./apiResponse";
 import type { Artist } from "./artist";
 import type { SimplifiedPlaylist } from "./playlist";
-import type { Episode, Show, SimplifiedAudioBook, SimplifiedEpisode, Track } from "./track";
+import type {  Show, SimplifiedAudioBook, SimplifiedEpisode, Track } from "./track";
 
 export enum SEARCH_TYPE {
   Track = "track",
@@ -27,7 +27,7 @@ export interface SearchResponse {
     artists?: ApiResponse<Artist>;
     albums?: ApiResponse<SimplifiedAlbum>;
     track?: ApiResponse<Track>;
-    palylists?:ApiResponse<SimplifiedPlaylist>;
+    playlists?:ApiResponse<SimplifiedPlaylist>;
     show?:ApiResponse<Show>;
     episode?:ApiResponse<SimplifiedEpisode>;
     audiobook?:ApiResponse<SimplifiedAudioBook>

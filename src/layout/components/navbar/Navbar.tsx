@@ -1,4 +1,3 @@
-
 import { Box } from "@mui/material";
 import ProfileMenuView from "./ProfileMenu";
 import { useAuth } from "../../../apis/useAuth";
@@ -10,14 +9,19 @@ const Navbar = () => {
   const { logout } = useAuth();
 
   return (
-    <Box display="flex" justifyContent="flex-end" alignItems="center" height="64px">
+    <Box
+      display="flex"
+      justifyContent="flex-end"
+      alignItems="center"
+      height="64px"
+    >
       {userProfile ? (
         <ProfileMenuView
           imageUrl={userProfile.images?.[0]?.url}
           displayName={userProfile.display_name}
           onLogout={() => {
             logout();
-            window.location.href = "/";
+            window.location.reload();
           }}
         />
       ) : (
@@ -27,4 +31,4 @@ const Navbar = () => {
   );
 };
 
-export {Navbar};
+export { Navbar };

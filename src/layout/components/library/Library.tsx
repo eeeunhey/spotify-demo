@@ -3,7 +3,7 @@ import { styled } from "@mui/material";
 import { useInView } from "react-intersection-observer";
 import useGetCurrentUserPlaylists from "../../../hooks/useGetCurrentUserPlaylists";
 import LoadingSpinner from "../LodingSpinner";
-import { EmptyPlaylist } from "../EmptyPlaylist";
+import { EmptyPlaylist } from "./components/EmptyPlaylist";
 import Playlist from "../../Playlist";
 
 const PlaylistContainer = styled("div")(({ theme }) => ({
@@ -18,7 +18,7 @@ const PlaylistContainer = styled("div")(({ theme }) => ({
 
 const Library = () => {
   const { ref, inView } = useInView();
-
+  const token = localStorage.getItem("access_token");
   const {
     data,
     fetchNextPage,
@@ -26,7 +26,7 @@ const Library = () => {
     isFetchingNextPage,
     isLoading,
     error,
-  } = useGetCurrentUserPlaylists({ limit: 15 });
+  } = useGetCurrentUserPlaylists({ limit: 15, enabled: !!token });;
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {

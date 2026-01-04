@@ -32,7 +32,7 @@ const ProfileMenuView = ({ imageUrl, displayName, onLogout }: Props) => {
     <>
       <ProfileContainer
         onClick={handleOpen}
-        // ✅ 접근성
+
         aria-controls={open ? menuId : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
@@ -43,18 +43,17 @@ const ProfileMenuView = ({ imageUrl, displayName, onLogout }: Props) => {
           sx={{ width: 32, height: 32 }}
         />
 
-        {/* ✅ 사진처럼 오른쪽 ▼ */}
         <ExpandMoreRoundedIcon sx={{ fontSize: 18, opacity: 0.9 }} />
       </ProfileContainer>
 
       <ProfileMenu
-        // ✅ 접근성
+
         id={menuId}
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
         keepMounted
-        // ✅ 위치
+
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
       >
