@@ -14,7 +14,7 @@ import {
 import { useEffect } from "react";
 import LoadingSpinner from "../../../layout/components/LodingSpinner";
 
-const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
+const StyledTableContainer = styled(TableContainer)(({  }) => ({
   width: "100%",
   background: "transparent",
 }));
