@@ -51,6 +51,8 @@ const SearchResultList = ({
     if (inView && hasNextPage && !isFetchingNextPage) fetchNextPage();
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
+
+
   return (
     <StyledTableContainer>
       <Table size="small" sx={{ tableLayout: "fixed" }}>
@@ -62,7 +64,7 @@ const SearchResultList = ({
 
             return (
               <StyledTableRow key={track.id}>
-                {/* 왼쪽: 곡 + 아티스트 */}
+
                 <TableCell sx={{ width: "60%" }}>
                   <Box display="flex" alignItems="center" gap={1.5}>
                     {imageUrl ? <AlbumImage src={imageUrl} alt={track.name} /> : null}
@@ -78,14 +80,13 @@ const SearchResultList = ({
                   </Box>
                 </TableCell>
 
-                {/* 가운데: 앨범 */}
+
                 <TableCell sx={{ width: "28%" }}>
                   <Typography variant="body2" color="text.secondary" noWrap>
                     {albumName}
                   </Typography>
                 </TableCell>
 
-                {/* 오른쪽: 버튼 */}
                 <TableCell sx={{ width: "12%" }} align="right">
                   <Button
                     size="small"
@@ -99,7 +100,6 @@ const SearchResultList = ({
             );
           })}
 
-          {/* 무한 스크롤 센티넬 */}
           <TableRow>
             <TableCell colSpan={3} sx={{ p: 0 }}>
               <div ref={ref} style={{ height: 1 }} />

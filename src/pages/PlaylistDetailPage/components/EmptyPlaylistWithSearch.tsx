@@ -1,6 +1,6 @@
 import { Box, IconButton, TextField, Typography, styled } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import useSearchItemsByKeyword from "../../../hooks/useSearchItemsByKeyword";
 import { SEARCH_TYPE } from "../../../models/search";
 import SearchResultList from "./SearchResultList";
@@ -18,27 +18,26 @@ const ResultArea = styled(Box)({
 const EmptyPlaylistWithSearch = ({ onClose }: { onClose?: () => void }) => {
   const [keyword, setKeyword] = useState("");
 
+  const q = keyword.trim();
+
   const {
-    data,
-    isLoading,
-    error,
-    hasNextPage = false,
-    isFetchingNextPage,
-    fetchNextPage,
   } = useSearchItemsByKeyword({
-    q: keyword,
+    q,
     type: [SEARCH_TYPE.Track],
   });
 
-  const tracks = useMemo(() => {
-    return (
-      data?.pages.flatMap((page: any) => page?.tracks?.items ?? page?.track?.items ?? []) ?? []
-    );
-  }, [data]);
+
+  const tracks =
+    data?.pages.reduce((acc: any[], page: any) => {
+      if (page?.tracks?.items) {
+        acc.push(...page.tracks.items);
+      }
+      return acc;
+    }, []) ?? [];
 
   const hasResults = tracks.length > 0;
-  const showLoading = isLoading && keyword.trim() !== "";
-  const showNoResult = keyword.trim() !== "" && !showLoading && !hasResults;
+  const showLoading = isLoading && q !== "";
+  const showNoResult = q !== "" && !showLoading && !hasResults;
 
   return (
     <Box
@@ -74,6 +73,7 @@ const EmptyPlaylistWithSearch = ({ onClose }: { onClose?: () => void }) => {
         }}
       />
 
+        {data?.pages.map((item)=> item.tracks.items)}
       <ResultArea>
         {error ? (
           <Typography variant="body2" color="error" mt={2}>
@@ -92,7 +92,7 @@ const EmptyPlaylistWithSearch = ({ onClose }: { onClose?: () => void }) => {
           />
         ) : showNoResult ? (
           <Typography variant="body2" color="text.secondary" mt={2}>
-            {`No Result for "${keyword}"`}
+            {`No Result for "${q}"`}
           </Typography>
         ) : null}
       </ResultArea>
